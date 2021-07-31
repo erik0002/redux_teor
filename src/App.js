@@ -1,25 +1,58 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react'
+import {connect} from 'react-redux';
+import './App.css'
+import Counter from "./Counter";
+import {add, addNumber, sub, asyncAdd} from "./redux/actions/actions";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+
+  render() {
+    return (
+        <div className={'App'}>
+          <h1>Счетчик <strong>{this.props.counter}</strong></h1>
+
+          <hr/>
+
+          <div className="Actions">
+            <button onClick={this.props.onAdd}>Добавить 1</button>
+            <button onClick={this.props.onSub}>Вычесть 1</button>
+          </div>
+
+         <div className="Actions">
+             <button onClick={this.props.onAddNumber.bind(this, 15)}> Добавить 15 </button>
+             <button onClick={this.props.onAddNumber.bind(this, - 15)}> Вычесть -15 </button>
+         </div>
+
+         <div className="Actions">
+             <button onClick={() => this.props.onAddNumber(25)}> Добавить 25</button>
+             <button onClick={() => this.props.onAddNumber(-25)}> Вычесть -25 </button>
+         </div>
+
+         <div className="Actions">
+             <button onClick={() => this.props.onAsyncAdd(100)}>
+                 Асинхронно добавить 100
+             </button>
+         </div>
+
+         <Counter/>
+
+        </div>
+    )
+  }
 }
 
-export default App;
+function mapStateToProps(state) {
+    return {
+        counter: state.counter1.counter
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onAdd: () => dispatch(add()),
+        onSub: () => dispatch(sub()),
+        onAddNumber: number => dispatch(addNumber(number)),
+        onAsyncAdd: number => dispatch(asyncAdd(number))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App)
